@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" ><![endif]-->
+<!--[if gt IE 8]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>Web Helpers</title>
+
+	<link rel="stylesheet" href="css/foundation.css">
+	<link rel="stylesheet" href="css/style.css">
+
+	<script type="text/javascript" src="js/vendor/custom.modernizr.js"></script>
+	<script type="text/javascript" src="js/vendor/jquery.js"></script>
+	<script src="js/foundation.min.js"></script>
+	<script type="text/javascript">
+
+		function check_rgb() {
+
+			var $input = $(this);
+			var regex = new RegExp("^([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])$", "i");
+
+			// Check input
+			if (regex.exec($input.val())) {
+				$input.removeClass('input-error');
+				var red = $('input[name=red-color]').val();
+				var green = $('input[name=green-color]').val();
+				var blue = $('input[name=blue-color]').val();
+
+				if (regex.exec(red) && regex.exec(green) && regex.exec(blue)) {
+					$(this).removeClass('input-error');
+					$('input[name=ios-color]').val(rgb_to_uicolor(red,green,blue));
+				}
+			} else {
+				$input.addClass('input-error');
+				$('input[name=ios-color]').val('');
+			}
+
+			
+		}
+
+		function rgb_to_uicolor(red, green, blue) {
+			return "[UIColor colorWithRed:" + (red/255).toFixed(2) + 
+								  " green:" + (green/255).toFixed(2) + 
+								   " blue:" + (blue/255).toFixed(2) + " alpha:1.0]";
+		}
+
+		$(function() {
+			$(document).foundation();
+
+			$('input[name=hex-color]').on('input', function(e) {
+				
+				var $text_input = $(this);
+				// console.log(text_input.val());
+				if ($text_input.val().length == 0 ) {
+					$text_input.removeClass('input-error');
+				} else if (/(#?[0-9a-fA-F]{6}$)|(^#?[0-9a-fA-F]{3}$)/i.test($text_input.val())) {
+					$text_input.removeClass('input-error');
+					
+					var color = $text_input.val();
+
+					// Remove hash
+					if (color.length == 4 || color.length == 7) {
+						color = color.substring(1);
+					}
+
+					// Expand short color code
+					if (color.length == 3) {
+						color = color.charAt(0) + color.charAt(0) + 
+								color.charAt(1) + color.charAt(1) + 
+								color.charAt(2) + color.charAt(2);
+					}
+
+					var red = parseInt(color.substring(0,2), 16);
+					var green = parseInt(color.substring(2,4), 16);
+					var blue = parseInt(color.substring(4,6), 16);
+
+					$('input[name=ios-color]').val(rgb_to_uicolor(red,green,blue));
+				} else {
+					$text_input.addClass('input-error');
+					$('input[name=ios-color]').val('');
+				}
+			});
+			
+			$('input[name=red-color]').on('input', check_rgb);
+			$('input[name=green-color]').on('input', check_rgb);
+			$('input[name=blue-color]').on('input', check_rgb);
+		});
+
+	</script>
+</head>
+<body>
+<br>
+<br>
+<div class="row">
+		<div class="large-12">
+			<h1>UIColor Converter</h1>
+		</div>
+	<div class="large-6 columns">
+		<div class="row">
+			<div class="large-3 columns">
+				<label for="hex-color">HEX</label>
+				<input type="text" name="hex-color">
+			</div>
+			<div class="large-2 large-offset-2 columns">
+				<label for="red-color">Red</label>
+				<input type="text" name="red-color">
+			</div>
+			<div class="large-2 columns">
+				<label for="green-color">Green</label>
+				<input type="text" name="green-color">
+			</div>
+			<div class="large-2 pull-1 columns">
+				<label for="blue-color">Blue</label>
+				<input type="text" name="blue-color">
+			</div>
+		</div>
+	</div>
+	<div class="large-6 columns">
+		<label for="ios-color">UIColor</label>
+		<input type="text" name="ios-color" read-only>
+	</div>
+</div>
+
+</body>
+</html>
