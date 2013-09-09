@@ -44,6 +44,10 @@
 								   " blue:" + (blue/255).toFixed(2) + " alpha:1.0]";
 		}
 
+		function dms_to_degrees(degrees, minutes, seconds) {
+			return (parseFloat(degrees) + (minutes/60) + (seconds/3600)).toFixed(6);
+		}
+
 		$(function() {
 			$(document).foundation();
 
@@ -84,13 +88,53 @@
 			$('input[name=red-color]').on('input', check_rgb);
 			$('input[name=green-color]').on('input', check_rgb);
 			$('input[name=blue-color]').on('input', check_rgb);
+
+			$('input[name=dms-latitude]').on('input', function() {
+				var $input = $(this);
+
+				if (/[0-9]{1,2}[:|°][0-9]{1,2}[:|'](?:\b[0-9]+(?:\.[0-9]*)?|\.[0-9]+\b)"?[N|S]/i.test($input.val())) {
+
+					var values = $input.val().match(/(\d+)[:|°](\d+)[:|']([0-9]*\.?[0-9]+)"?[N|S]/);
+
+					if (values !== null) {
+						var degrees = values[1];
+						var minutes = values[2];
+						var seconds = values[3];
+
+						$('input[name=degrees-latitude]').val(dms_to_degrees(degrees,minutes,seconds));
+					} else {
+						$('input[name=degrees-latitude]').val('');
+					}
+				} else {
+					$('input[name=degrees-latitude]').val('');
+				}
+			});
+
+			$('input[name=dms-longitude]').on('input', function() {
+				var $input = $(this);
+
+				if (/[0-9]{1,2}[:|°][0-9]{1,2}[:|'](?:\b[0-9]+(?:\.[0-9]*)?|\.[0-9]+\b)"?[E|W]/i.test($input.val())) {
+
+					var values = $input.val().match(/(\d+)[:|°](\d+)[:|']([0-9]*\.?[0-9]+)"?[E|W]/);
+
+					if (values !== null) {
+						var degrees = values[1];
+						var minutes = values[2];
+						var seconds = values[3];
+
+						$('input[name=degrees-longitude]').val(dms_to_degrees(degrees,minutes,seconds));
+					} else {
+						$('input[name=degrees-longitude]').val('');
+					}
+				} else {
+					$('input[name=degrees-longitude]').val('');
+				}
+			});
 		});
 
 	</script>
 </head>
 <body>
-<br>
-<br>
 <div class="row">
 		<div class="large-12">
 			<h1>UIColor Converter</h1>
@@ -118,6 +162,30 @@
 	<div class="large-6 columns">
 		<label for="ios-color">UIColor</label>
 		<input type="text" name="ios-color" read-only>
+	</div>
+</div>
+
+<div class="row">
+	<div class="large-12">
+		<h1>GPS Helper</h1>
+	</div>
+</div>
+<div class="row">
+	<div class="large-6 columns">
+		<label for="dms-latitude">DMS Latitude</label>
+		<input type="text" name="dms-latitude">
+	</div>
+	<div class="large-6 columns">
+		<label for="degrees-latitude">Degrees Latitude</label>
+		<input type="text" name="degrees-latitude" readonly>
+	</div>
+	<div class="large-6 columns">
+		<label for="dms-longitude">DMS Longitude</label>
+		<input type="text" name="dms-longitude">
+	</div>
+	<div class="large-6 columns">
+		<label for="degrees-longitude">Degrees Longitude</label>
+		<input type="text" name="degrees-longitude" readonly>
 	</div>
 </div>
 
